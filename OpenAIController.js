@@ -106,22 +106,6 @@ module.exports = class OpenAIController extends Controller {
 		this.online();
 	}
 
-	onError(err) {
-		console.log(err);
-		this.log.err("%1 Error: %2", this, err);
-
-		try {
-			this.startDelay(Math.min(120_000, (this.config.error_interval || 5_000) * Math.max(1, ++this.failures - 12)));
-		}
-		catch {
-			// soft warning
-		}
-
-		if (this.failures >= 3) {
-			this.offline();
-		}
-	}
-
 	onHttpError(response) {
 		this.log.debug(5, "%1 [onHttpError]: %2", this, response);
 		return Promise.reject(`HTTP error - ${response.url} - ${response.status} - ${response.statusText}`);
@@ -290,6 +274,22 @@ module.exports = class OpenAIController extends Controller {
 			}
 
 			e.deferNotifies(false);
+		}
+	}
+
+	onError(err) {
+		console.log(err);
+		this.log.err("%1 Error: %2", this, err);
+
+		try {
+			this.startDelay(Math.min(120_000, (this.config.error_interval || 5_000) * Math.max(1, ++this.failures - 12)));
+		}
+		catch {
+			// soft warning
+		}
+
+		if (this.failures >= 3) {
+			this.offline();
 		}
 	}
 };

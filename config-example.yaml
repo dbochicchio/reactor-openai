@@ -2,7 +2,7 @@
 # "controllers" section of your reactor.yaml file.
 ---
 
-  - id: openaicontroller
+  - id: openai
     name: Open AI
     implementation: OpenAIController
     enabled: true

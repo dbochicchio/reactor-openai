@@ -50,7 +50,7 @@ controllers:
   # Your existing controllers will be below the above line.
   # Add the following after the last "- id" line in this
   # section.
-  - id: openaicontroller
+  - id: openai
     name: Open AI
     implementation: OpenAIController
     enabled: true
