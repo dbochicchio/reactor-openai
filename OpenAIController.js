@@ -123,15 +123,14 @@ module.exports = class OpenAIController extends Controller {
 	}
 
 	onHttpError(response) {
-		return Promise.reject(`HTTP error - ${response.status} - ${response.statusText} - ${response.url}`);
+		this.log.debug(5, "%1 [onHttpError]: %2", this, response);
+		return Promise.reject(`HTTP error - ${response.url} - ${response.status} - ${response.statusText}`);
 	}
 
 	async callService(e, params) {
-		const log = this.log;
-
 		let service = e.getAttribute(`${ns}.service`);
 		let config = models[e.id];
-		log.debug(5, "%1 [callService]: %2 - %3", this, e.id, params);
+		this.log.debug(5, "%1 [callService]: %2 - %3", this, e.id, params);
 
 		const body = {
 			model: e.getAttribute(`${ns}model`) ?? 'gpt-4',
@@ -144,81 +143,49 @@ module.exports = class OpenAIController extends Controller {
 			stop: params.stop || config.stop || null
 		};
 
+		let url = null;
+		let headers = null;
+
 		switch (service) {
 			case 'openai':
-				{
-					// support for openai service
-					const url = `https://api.openai.com/v1/chat/completions`;
+				// support for openai service
+				url = `https://api.openai.com/v1/chat/completions`;
 
-					const headers = {
-						'Content-Type': 'application/json',
-						'Authorization': `Bearer ${config.api_key}`
-					};
-
-					log.debug(5, "%1 [callService] %2 - %2 - %3", this, e.id, url, body);
-
-					try {
-						const response = await fetch(url, {
-							method: 'POST',
-							headers: headers,
-							body: JSON.stringify(body)
-						});
-
-						if (!response.ok) {
-							return this.onHttpError(response);
-						}
-
-						const data = await response.json();
-						log.debug(5, "%1 [callService] response from %2: %3", this, e.id, data);
-
-						// [Object]{ "choices": [ { "finish_reason": "stop", "index": 0, "message": { "content": "Certo! Perché i matematici odiano le montagne russe? Perché non amano le funzioni non lineari!", "role": "assistant" } } ], "created": 1733051230, "id": "chatcmpl-AZc58JG79Xs05wVXtCbhrN4dg7G54", "model": "gpt-4o-2024-05-13", "object": "chat.completion", "system_fingerprint": "fp_04751d0b65", "usage": { "completion_tokens": 27, "prompt_tokens": 12, "total_tokens": 39 } }
-						// return the response
-						return Promise.resolve(data.choices[0].message.content);
-					}
-					catch (err) {
-						this.onError(err);
-					}
-					break;
-				}
+				headers = {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${config.api_key}`
+				};
+				break;
 			case 'azure':
-				{
-					// support for azure openai service
-					const url = `${config.endpoint}`;
+				// support for azure openai service
+				url = `${config.endpoint}`;
 
-					const headers = {
-						'Content-Type': 'application/json',
-						'api-key': config.api_key
-					};
-
-					log.debug(5, "%1 [callService] %2 - %2 - %3", this, e.id, url, body);
-
-					try {
-						const response = await fetch(url, {
-							method: 'POST',
-							headers: headers,
-							body: JSON.stringify(body)
-						});
-
-						if (!response.ok) {
-							return this.onHttpError(response);
-						}
-
-						const data = await response.json();
-						log.debug(5, "%1 [callService] response from %2: %3", this, e.id, data);
-
-						// return the response
-						return Promise.resolve(data.choices[0].message.content);
-					}
-					catch (err) {
-						this.onError(err);
-					}
-					break;
-				}
+				headers = {
+					'Content-Type': 'application/json',
+					'api-key': config.api_key
+				};
+				break;
 			default:
-				return Promise.reject(`This model is not supported: ${service}`);
+				return Promise.reject(`Model is not supported: ${service}`);
 		}
 
-		return null;
+		this.log.debug(5, "%1 [callService] %2 - %3 - %4", this, e.id, url, body);
+
+		const response = await fetch(url, {
+			method: 'POST',
+			headers: headers,
+			body: JSON.stringify(body)
+		});
+
+		if (!response.ok) {
+			return this.onHttpError(response);
+		}
+
+		const data = await response.json();
+		this.log.debug(5, "%1 [callService] response from %2: %3", this, e.id, data);
+
+		// return the response
+		return Promise.resolve(data.choices[0].message.content);
 	}
 
 	/* performOnEntity() is used to implement actions on entities */
