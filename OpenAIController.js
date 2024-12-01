@@ -133,6 +133,17 @@ module.exports = class OpenAIController extends Controller {
 		let config = models[e.id];
 		log.debug(5, "%1 [callService]: %2 - %3", this, e.id, params);
 
+		const body = {
+			model: e.getAttribute(`${ns}model`) ?? 'gpt-4',
+			messages: [{ role: "user", content: params.text }],
+			max_tokens: params.max_tokens || config.max_tokens || 2000,
+			temperature: params.temperature || config.temperature || 0.5,
+			top_p: params.top_p || config.top_p || 1,
+			frequency_penalty: params.frequency_penalty || config.frequency_penalty || 0,
+			presence_penalty: params.presence_penalty || config.presence_penalty || 0,
+			stop: params.stop || config.stop || null
+		};
+
 		switch (service) {
 			case 'openai':
 				{
@@ -142,17 +153,6 @@ module.exports = class OpenAIController extends Controller {
 					const headers = {
 						'Content-Type': 'application/json',
 						'Authorization': `Bearer ${config.api_key}`
-					};
-
-					const body = {
-						model: e.getAttribute("model") ?? 'gpt-4',
-						messages: [{ role: "user", content: params.text }],
-						max_tokens: params.max_tokens || 2000,
-						temperature: params.temperature || 0.5,
-						top_p: params.top_p || 1,
-						frequency_penalty: params.frequency_penalty || 0,
-						presence_penalty: params.presence_penalty || 0,
-						stop: params.stop || null
 					};
 
 					log.debug(5, "%1 [callService] %2 - %2 - %3", this, e.id, url, body);
@@ -188,17 +188,6 @@ module.exports = class OpenAIController extends Controller {
 					const headers = {
 						'Content-Type': 'application/json',
 						'api-key': config.api_key
-					};
-
-					const body = {
-						model: config.model ?? 'gpt-4',
-						messages: [{ role: "user", content: params.text }],
-						max_tokens: params.max_tokens || 2000,
-						temperature: params.temperature || 0.5,
-						top_p: params.top_p || 1,
-						frequency_penalty: params.frequency_penalty || 0,
-						presence_penalty: params.presence_penalty || 0,
-						stop: params.stop || null
 					};
 
 					log.debug(5, "%1 [callService] %2 - %2 - %3", this, e.id, url, body);
