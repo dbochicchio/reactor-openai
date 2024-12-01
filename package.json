@@ -1,0 +1,14 @@
+{
+	"name": "reactor-openai",
+	"version": "0.1.24336",
+	"description": "Reactor Add-on: OpenAI",
+	"homepage": "https://github.com/dbochicchio/reactor-openai",
+	"main": "./OpenAIController.js",
+	"private": true,
+	"author": "Daniele Bochicchio <daniele@bochicchio.com>",
+	"license": "MIT",
+
+	"dependencies": {
+
+	}
+}

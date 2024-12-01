@@ -1,0 +1,33 @@
+# Copy and paste everything below (not including) the --- into the
+# "controllers" section of your reactor.yaml file.
+---
+
+  - id: openaicontroller
+    name: Open AI
+    implementation: OpenAIController
+    enabled: true
+    config:
+      models:
+        - id: openai
+          name: OpenAI GPT-4
+          model: gpt-4
+          service: openai
+          api_key: xxxxx
+          max_tokens: 2000 # default
+          temperature: 0.5 # default
+          top_p: 1 # default
+          frequency_penalty: 0 # default
+          presence_penalty: 0 # default
+          stop: null # default
+        - id: azure
+          name: Azure GPT-4
+          model: gpt-4
+          service: azure
+          endpoint: "http://localhost:5000" # taken from your Azure GPT-4 service
+          api_key: xxxx
+          max_tokens: 2000 # default
+          temperature: "0.5" # default
+          top_p: 1 # default
+          frequency_penalty: 0 # default
+          presence_penalty: 0 # default
+          stop: null # default

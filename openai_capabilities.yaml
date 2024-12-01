@@ -1,0 +1,32 @@
+# openai_capabilities.yaml
+#
+# Copyright (C) 2022-2024 Daniele Bochicchio, All Rights Reserved
+#
+# *** IMPORTANT ***
+# This is a system file. DO NOT place overrides or make modifications here.
+---
+version: 24336
+revision: 1
+format: 1
+
+capabilities:
+  x_openai:
+    attributes:
+    actions:
+      prompt:
+        arguments:
+          text:
+            type: string
+          temperature:
+            type: real
+          max_tokens:
+            type: int
+          top_p:
+            type: real
+          frequency_penalty:
+            type: real
+          presence_penalty:
+            type: real
+          stop:
+            type: string
+        response: true
