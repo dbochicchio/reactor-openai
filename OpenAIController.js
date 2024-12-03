@@ -6,7 +6,7 @@
  *  Disclaimer: This is beta software, so quirks and bugs are expected. Please report back.
  */
 
-const version = 24336;
+const version = 24338;
 const className = "openai";
 const ns = "x_openai"
 const ignoredValue = "@@IGNORED@@"
@@ -116,7 +116,7 @@ module.exports = class OpenAIController extends Controller {
 		let config = models[e.id];
 		this.log.debug(5, "%1 [callService]: %2 - %3", this, e.id, params);
 
-		const body = {
+		let body = {
 			model: e.getAttribute(`${ns}model`) ?? 'gpt-4',
 			messages: [{ role: "user", content: params.text }],
 			max_tokens: params.max_tokens || config.max_tokens || 2000,
@@ -134,6 +134,9 @@ module.exports = class OpenAIController extends Controller {
 			case 'openai':
 				// support for openai service
 				url = `https://api.openai.com/v1/chat/completions`;
+
+				body.max_completion_tokens = body.max_tokens;
+				body.max_tokens = undefined;
 
 				headers = {
 					'Content-Type': 'application/json',
