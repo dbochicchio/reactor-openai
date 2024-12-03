@@ -65,7 +65,6 @@ module.exports = class OpenAIController extends Controller {
 	run() {
 		this.log.debug(5, "%1 running", this);
 
-		this.purgeDevices();
 		this.startClient();
 	}
 
@@ -73,8 +72,11 @@ module.exports = class OpenAIController extends Controller {
 	startClient() {
 		if (this.stopping) return;
 
-		// mark all as dead
-		this.entities.forEach(e => e.markDead(true));
+		// mark all entities as dead
+		var entities = this.getEntities();
+		for (let [eid, e] of Object.entries(entities)) {
+			e.markDead(eid != 'system' && allEntities.delete('controller_all'));
+		}
 
 		// system
 		this.mapDevice(this.system.id, this.config.name ?? "OpenAI Controller", ["sys_system"], "sys_system.state",
