@@ -75,7 +75,7 @@ module.exports = class OpenAIController extends Controller {
 		// mark all entities as dead
 		var entities = this.getEntities();
 		for (let [eid, e] of Object.entries(entities)) {
-			e.markDead(eid != 'system' && allEntities.delete('controller_all'));
+			e.markDead(eid != 'system' && eid != 'controller_all');
 		}
 
 		// system
