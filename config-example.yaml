@@ -3,7 +3,7 @@
 ---
 
   - id: openai
-    name: Open AI
+    name: OpenAI
     implementation: OpenAIController
     enabled: true
     config:

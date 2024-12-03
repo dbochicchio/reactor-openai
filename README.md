@@ -51,7 +51,7 @@ controllers:
   # Add the following after the last "- id" line in this
   # section.
   - id: openai
-    name: Open AI
+    name: OpenAI
     implementation: OpenAIController
     enabled: true
     config:
