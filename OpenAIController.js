@@ -65,12 +65,16 @@ module.exports = class OpenAIController extends Controller {
 	run() {
 		this.log.debug(5, "%1 running", this);
 
+		this.purgeDevices();
 		this.startClient();
 	}
 
 	/* startClient() load status and creates the entities */
 	startClient() {
 		if (this.stopping) return;
+
+		// mark all as dead
+		this.entities.forEach(e => e.markDead(true));
 
 		// system
 		this.mapDevice(this.system.id, this.config.name ?? "OpenAI Controller", ["sys_system"], "sys_system.state",
@@ -104,6 +108,9 @@ module.exports = class OpenAIController extends Controller {
 
 		this.log.debug(5, "%1 [startClient] completed", this);
 		this.online();
+
+		// purge deleted entities
+		this.purgeDeadEntities();
 	}
 
 	onHttpError(response) {
