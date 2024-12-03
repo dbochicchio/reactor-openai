@@ -60,7 +60,7 @@ controllers:
           name: OpenAI GPT-4
           model: gpt-4
           service: openai
-          api_key: xxxxx # taken from your Open AI dashboard
+          api_key: xxxxx # taken from your OpenAI dashboard
           max_tokens: 2000 # default
           temperature: 0.5 # default
           top_p: 1 # default
